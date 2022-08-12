@@ -1,48 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { Todo } from './todo';
+import { TodoDocument } from './todo.schema';
 
 @Injectable()
 export class TodoService {
-  todos: Todo[] = [];
+  constructor(
+    @InjectModel(TodoDocument.name) private todoModel: Model<TodoDocument>,
+  ) {}
 
   // CRUD
   // Create
-  create(dto: CreateTodoDto): Todo {
-    this.todos.push({
-      id: this.todos.length + 1,
-      ...dto,
-      done: false,
-    });
-
-    return this.todos[this.todos.length - 1];
+  async create(dto: CreateTodoDto): Promise<TodoDocument> {
+    return this.todoModel.create(dto);
   }
 
   // Read
-  findAll(): Todo[] {
-    return this.todos;
+  async findAll(): Promise<TodoDocument[]> {
+    return this.todoModel.find();
   }
 
   // Update
-  update(id: number, dto: UpdateTodoDto): Todo {
-    const idx = this.todos.findIndex((todo) => todo.id === id);
-    this.todos[idx] = { ...this.todos[idx], ...dto } as Todo;
-    return this.todos[idx];
+  async update(id: string, dto: UpdateTodoDto): Promise<TodoDocument> {
+    return this.todoModel.findOneAndUpdate({ _id: id }, dto);
   }
 
   // Delete
-  delete(id: number): Todo {
-    const idx = this.todos.findIndex((todo) => todo.id === id);
-    const deleteTodo = this.todos[idx];
-
-    this.todos.forEach((todo, index) => {
-      if (todo.id > id) {
-        this.todos[index].id--;
-      }
-    });
-    this.todos.splice(idx, 1);
-
-    return deleteTodo;
+  async delete(id: string): Promise<TodoDocument> {
+    return this.todoModel.findOneAndDelete({ _id: id });
   }
 }

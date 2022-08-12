@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { Todo } from './todo';
+import { TodoDocument } from './todo.schema';
 import { TodoService } from './todo.service';
 
 @Controller('todo')
@@ -18,25 +18,28 @@ export class TodoController {
 
   // Create
   @Post()
-  create(@Body() dto: CreateTodoDto): Todo {
+  async create(@Body() dto: CreateTodoDto): Promise<TodoDocument> {
     return this.todoService.create(dto);
   }
 
   // Read
   @Get()
-  findAll(): Todo[] {
+  async findAll(): Promise<TodoDocument[]> {
     return this.todoService.findAll();
   }
 
   //Update
   @Put(':id')
-  update(@Param('id') id: number, @Body() dto: UpdateTodoDto): Todo {
-    return this.todoService.update(Number(id), dto);
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateTodoDto,
+  ): Promise<TodoDocument> {
+    return this.todoService.update(id, dto);
   }
 
   //Delete
   @Delete(':id')
-  delete(@Param('id') id: number): Todo {
-    return this.todoService.delete(Number(id));
+  async delete(@Param('id') id: string): Promise<TodoDocument> {
+    return this.todoService.delete(id);
   }
 }
