@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LoggingModule } from './interceptors/logging/logging.module';
 import { TodoModule } from './todo/todo.module';
-import { TodoDocument, TodoSchema } from './todo/todo.schema';
 
 @Module({
   imports: [
@@ -17,6 +17,7 @@ import { TodoDocument, TodoSchema } from './todo/todo.schema';
       inject: [ConfigService],
     }),
     TodoModule,
+    LoggingModule,
   ],
   controllers: [],
   providers: [],
