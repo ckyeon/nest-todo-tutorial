@@ -6,7 +6,10 @@ import {
   Param,
   Post,
   Put,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { TodoDocument } from './todo.schema';
@@ -17,8 +20,13 @@ export class TodoController {
   constructor(private todoService: TodoService) {}
 
   // Create
+  @UseGuards(JwtGuard)
   @Post()
-  async create(@Body() dto: CreateTodoDto): Promise<TodoDocument> {
+  async create(
+    @Request() req,
+    @Body() dto: CreateTodoDto,
+  ): Promise<TodoDocument> {
+    dto.user = req.user.userId;
     return this.todoService.create(dto);
   }
 

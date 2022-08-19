@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggingModule } from './interceptors/logging/logging.module';
 import { TodoModule } from './todo/todo.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TodoModule } from './todo/todo.module';
     }),
     TodoModule,
     LoggingModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
